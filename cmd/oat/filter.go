@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/getkin/kin-openapi/openapi3"
+	"github.com/jacklee1792/oat"
 	"github.com/spf13/cobra"
-	"oat"
 )
 
 var filterOpsCmd = &cobra.Command{
