@@ -1,6 +1,6 @@
-module oat
+module github.com/jacklee1792/oat
 
-go 1.18
+go 1.19
 
 require (
 	github.com/getkin/kin-openapi v0.110.0
