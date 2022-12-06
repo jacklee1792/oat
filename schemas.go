@@ -119,11 +119,33 @@ func (c *SchemaCleaner) dfsResponses(spec *openapi3.T, rs openapi3.Responses) {
 	}
 }
 
+func (c *SchemaCleaner) dfsParameter(spec *openapi3.T, p *openapi3.Parameter) {
+	if c.visited(unsafe.Pointer(p)) {
+		return
+	}
+	c.dfsSchemaRef(spec, p.Schema)
+}
+
+func (c *SchemaCleaner) dfsParameterRef(spec *openapi3.T, pr *openapi3.ParameterRef) {
+	if c.visited(unsafe.Pointer(pr)) {
+		return
+	}
+	c.recordRef(spec, pr.Ref)
+	c.dfsParameter(spec, pr.Value)
+}
+
+func (c *SchemaCleaner) dfsParameters(spec *openapi3.T, ps openapi3.Parameters) {
+	for _, pr := range ps {
+		c.dfsParameterRef(spec, pr)
+	}
+}
+
 // Clean removes all unused components in-place. The return value is the number of components
 // removed.
 func (c *SchemaCleaner) Clean(spec *openapi3.T) (removedCount int) {
 	for _, path := range spec.Paths {
 		for _, op := range path.Operations() {
+			c.dfsParameters(spec, op.Parameters)
 			c.dfsResponses(spec, op.Responses)
 		}
 	}
