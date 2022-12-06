@@ -140,13 +140,19 @@ func (c *SchemaCleaner) dfsParameters(spec *openapi3.T, ps openapi3.Parameters) 
 	}
 }
 
-// Clean removes all unused components in-place. The return value is the number of components
-// removed.
-func (c *SchemaCleaner) Clean(spec *openapi3.T) (removedCount int) {
+// Clean removes all unused components in-place, respecting the slice of names to keep. The return
+// value is the number of components removed.
+func (c *SchemaCleaner) Clean(spec *openapi3.T, excepts []string) (removedCount int) {
 	for _, path := range spec.Paths {
 		for _, op := range path.Operations() {
 			c.dfsParameters(spec, op.Parameters)
 			c.dfsResponses(spec, op.Responses)
+		}
+	}
+	for _, e := range excepts {
+		if sr, ok := spec.Components.Schemas[e]; ok {
+			c.recordRef(spec, e)
+			c.dfsSchemaRef(spec, sr)
 		}
 	}
 	for name := range spec.Components.Schemas {

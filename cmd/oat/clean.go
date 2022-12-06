@@ -11,8 +11,8 @@ import (
 )
 
 var cleanSchemasCmd = &cobra.Command{
-	Use:   "clean-schemas",
-	Short: "removed unused schemas in components: schemas",
+	Use:   "clean-schemas [exceptSchemaName ...]",
+	Short: "removed unused schemas in components: schemas (with exceptions)",
 	PreRun: func(cmd *cobra.Command, args []string) {
 		if outputPath == "" {
 			outputPath = makeOutputPath(inputPath, "cleaned")
@@ -22,7 +22,7 @@ var cleanSchemasCmd = &cobra.Command{
 		spec, err := openapi3.NewLoader().LoadFromFile(inputPath)
 		cobra.CheckErr(err)
 		sc := oat.SchemaCleaner{}
-		n := sc.Clean(spec)
+		n := sc.Clean(spec, args)
 		data, err := json.MarshalIndent(spec, "", "  ")
 		cobra.CheckErr(err)
 		err = os.WriteFile(outputPath, data, 0666)
