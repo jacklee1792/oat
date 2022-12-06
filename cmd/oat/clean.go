@@ -23,7 +23,7 @@ var cleanSchemasCmd = &cobra.Command{
 		cobra.CheckErr(err)
 		sc := oat.SchemaCleaner{}
 		n := sc.Clean(spec)
-		data, err := json.MarshalIndent(spec, "", "\t")
+		data, err := json.MarshalIndent(spec, "", "  ")
 		cobra.CheckErr(err)
 		err = os.WriteFile(outputPath, data, 0666)
 		cobra.CheckErr(err)
