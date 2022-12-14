@@ -1,6 +1,9 @@
 package main
 
-import "github.com/spf13/cobra"
+import (
+	"github.com/getkin/kin-openapi/openapi3"
+	"github.com/spf13/cobra"
+)
 
 var rootCmd = &cobra.Command{
 	Use:   "oat",
@@ -13,6 +16,14 @@ var (
 )
 
 func init() {
+	rootCmd.PersistentFlags().IntVarP(
+		&openapi3.CircularReferenceCounter,
+		"circular-reference-counter",
+		"c",
+		openapi3.CircularReferenceCounter, // use default as set in openapi3
+		"Sets max depth for circular references (openapi3.CircularReferenceCounter)",
+	)
+
 	rootCmd.AddCommand(filterOpsCmd)
 	rootCmd.AddCommand(cleanSchemasCmd)
 	rootCmd.AddCommand(validateCmd)
