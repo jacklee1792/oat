@@ -48,7 +48,7 @@ func (c *SchemaCleaner) recordRef(spec *openapi3.T, ref string) {
 	name := strings.TrimPrefix(ref, SchemaRefPrefix)
 	sr := spec.Components.Schemas[name]
 	if sr == nil {
-		panic(fmt.Sprintf("schema ref not found: %s", ref))
+		fmt.Printf("schema ref not found: %s\n", ref)
 	}
 	if _, ok := c.referenced[name]; !ok {
 		c.referenced[name] = struct{}{}
